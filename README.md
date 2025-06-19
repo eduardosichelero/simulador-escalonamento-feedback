@@ -90,7 +90,7 @@ Ao final da simulação, o sistema calcula e exibe as seguintes métricas de des
 * **Taxa de Processamento (Throughput):** O número de processos concluídos por unidade de tempo.
     * $Throughput = \frac{Nº\,Total\,de\,Processos}{Tempo\,Total\,da\,Simulação}$
 
-## 5. Análise dos Resultados
+## 4. Análise dos Resultados
 
 Utilizando o conjunto de dados de exemplo (`data/exemplos.json`), podemos observar o comportamento característico do MLFQ.
 
@@ -111,7 +111,7 @@ Utilizando o conjunto de dados de exemplo (`data/exemplos.json`), podemos observ
 
 Esta análise confirma que o algoritmo prioriza processos novos e curtos (como P5), garantindo alta interatividade, enquanto processos longos e intensivos em CPU (como P3) são isolados nas filas de baixa prioridade, impedindo que monopolizem o sistema.
 
-## 6. Referências
+## 5. Referências
 * Arpaci-Dusseau, R. H., & Arpaci-Dusseau, A. C. (2018). *Operating Systems: Three Easy Pieces (Chapters on Scheduling)*. Arpaci-Dusseau Books. Disponível em: [https://pages.cs.wisc.edu/~remzi/OSTEP/](https://pages.cs.wisc.edu/~remzi/OSTEP/)
 * Silberschatz, A., Galvin, P. B., & Gagne, G. (2018). *Operating System Concepts*. Wiley.
 * Wikipedia. (2024). *Multilevel feedback queue*. Disponível em: [https://en.wikipedia.org/wiki/Multilevel_feedback_queue](https://en.wikipedia.org/wiki/Multilevel_feedback_queue)
