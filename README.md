@@ -1,6 +1,6 @@
 # Trabalho G2 - Simulador de Escalonamento com Feedback Multinível
 
-**Link para o Vídeo da Apresentação:** `[COLOQUE AQUI O LINK PARA O VÍDEO NO YOUTUBE/DRIVE]`
+**Link para o Vídeo da Apresentação:**
 
 ## Integrantes do Grupo
 * Bernardo Ferrari
