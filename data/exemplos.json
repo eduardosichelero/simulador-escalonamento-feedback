@@ -1,0 +1,7 @@
+[
+    { "name": "P1", "arrivalTime": 0, "burstTime": 8 },
+    { "name": "P2", "arrivalTime": 1, "burstTime": 4 },
+    { "name": "P3", "arrivalTime": 2, "burstTime": 9 },
+    { "name": "P4", "arrivalTime": 3, "burstTime": 5 },
+    { "name": "P5", "arrivalTime": 4, "burstTime": 2 }
+]

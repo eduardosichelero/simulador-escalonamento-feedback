@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simulador de Escalonamento com Feedback Multinível</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🔄 Escalonamento com Feedback Multinível</h1>
+            <p>Simulação avançada de algoritmo de escalonamento com múltiplas filas e quantum dinâmico</p>
+        </div>
+
+        <div class="content">
+            <div class="controls">
+                <div class="control-group">
+                    <h3>⚙️ Configuração das Filas</h3>
+                    <div class="input-row">
+                        <label>Quantum Fila 0:</label>
+                        <input type="number" id="quantum0" value="2" min="1" max="10">
+                    </div>
+                    <div class="input-row">
+                        <label>Quantum Fila 1:</label>
+                        <input type="number" id="quantum1" value="4" min="1" max="20">
+                    </div>
+                    <div class="input-row">
+                        <label>Fila 2:</label>
+                        <span>FCFS (sem quantum)</span>
+                    </div>
+                </div>
+
+                <div class="control-group">
+                    <h3>➕ Adicionar Processo</h3>
+                    <div class="input-row">
+                        <label>Nome:</label>
+                        <input type="text" id="processName" placeholder="P1, P2, etc.">
+                    </div>
+                    <div class="input-row">
+                        <label>Tempo Chegada:</label>
+                        <input type="number" id="arrivalTime" value="0" min="0">
+                    </div>
+                    <div class="input-row">
+                        <label>Tempo CPU:</label>
+                        <input type="number" id="burstTime" value="5" min="1">
+                    </div>
+                    <button class="btn" onclick="addProcess()">Adicionar Processo</button>
+                </div>
+
+                <div class="control-group">
+                    <h3>🎮 Controles de Simulação</h3>
+                    <div style="display: flex; flex-direction: column; gap: 10px;">
+                        <button class="btn" onclick="startSimulation()">▶️ Iniciar Simulação</button>
+                        <button class="btn btn-secondary" onclick="resetSimulation()">🔄 Resetar</button>
+                        <button class="btn" onclick="addExampleProcesses()">📝 Carregar Exemplo</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="processes-section">
+                <h3>📋 Processos Adicionados</h3>
+                <div class="processes-grid" id="processesGrid"></div>
+            </div>
+
+            <div class="queues-visualization" id="queuesVisualization">
+                <div class="queue queue-0">
+                    <h4>🔴 Fila 0 - Prioridade Alta (RR)</h4>
+                    <div class="process-queue" id="queue0"></div>
+                </div>
+                <div class="queue queue-1">
+                    <h4>🟡 Fila 1 - Prioridade Média (RR)</h4>
+                    <div class="process-queue" id="queue1"></div>
+                </div>
+                <div class="queue queue-2">
+                    <h4>🟢 Fila 2 - Prioridade Baixa (FCFS)</h4>
+                    <div class="process-queue" id="queue2"></div>
+                </div>
+            </div>
+
+            <div class="timeline">
+                <h3>⏱️ Timeline de Execução</h3>
+                <div class="timeline-bar" id="timelineBar"></div>
+            </div>
+
+            <div class="statistics" id="statistics"></div>
+
+            <div class="log" id="simulationLog"></div>
+        </div>
+    </div>
+
+    <script src="js/script.js"></script>
+</body>
+</html>
