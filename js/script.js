@@ -16,6 +16,7 @@ class Process {
 class MultilevelFeedbackQueue {
     constructor() {
         this.processes = [];
+        this.allProcesses = []; // Lista imutável de todos os processos
         this.queues = [[], [], []]; // 3 filas
         this.quantums = [2, 4, Infinity]; // Quantum para cada fila
         this.currentTime = 0;
@@ -27,6 +28,7 @@ class MultilevelFeedbackQueue {
 
     addProcess(process) {
         this.processes.push(process);
+        this.allProcesses.push(process); // Adiciona também na lista imutável
         this.updateProcessesDisplay();
         this.logMessage(`✅ Processo ${process.name} adicionado (Chegada: ${process.arrivalTime}, CPU: ${process.burstTime})`);
     }
@@ -63,6 +65,7 @@ class MultilevelFeedbackQueue {
         for (let i = 0; i < 3; i++) {
             const queueElement = document.getElementById(`queue${i}`);
             queueElement.innerHTML = '';
+            // Adiciona apenas os processos que estão na fila i
             this.queues[i].forEach(process => {
                 const processDiv = document.createElement('div');
                 processDiv.className = 'process-in-queue';
@@ -119,7 +122,7 @@ class MultilevelFeedbackQueue {
 
     checkArrivals() {
         this.processes.forEach(process => {
-            if (process.arrivalTime === this.currentTime && !this.queues.flat().includes(process) && !this.completedProcesses.includes(process)) {
+            if (process.arrivalTime <= this.currentTime && !this.queues.flat().includes(process) && !this.completedProcesses.includes(process)) {
                 this.queues[0].push(process); // Novos processos sempre na fila 0
                 this.logMessage(`🚀 Processo ${process.name} chegou e foi adicionado à Fila 0`);
             }
@@ -178,36 +181,57 @@ class MultilevelFeedbackQueue {
         }
         // Atualizar tempos de espera para outros processos
         this.queues.flat().forEach(p => {
-            if (p !== process) {
+            if (p !== process && p.remainingTime > 0) {
                 p.waitingTime += executionTime;
             }
         });
+        // Remover processos finalizados de todas as filas para evitar loop infinito
+        for (let i = 0; i < 3; i++) {
+            this.queues[i] = this.queues[i].filter(p => p.remainingTime > 0);
+        }
+        // --- CORREÇÃO: Remover processos já completados da fila de processos também ---
+        this.processes = this.processes.filter(p => p.remainingTime > 0 || this.completedProcesses.includes(p));
+    }
+
+    simulateStep() {
+        if (this.completedProcesses.length >= this.allProcesses.length) {
+            this.logMessage(`🏁 Simulação concluída! Tempo total: ${this.currentTime}`);
+            this.isRunning = false;
+            return;
+        }
+        // Log do estado das filas
+        let filasLog = this.queues.map((fila, idx) => `Fila ${idx}: [${fila.map(p => p.name + ' (' + p.remainingTime + ')').join(', ')}]`).join(' | ');
+        this.logMessage(`Filas: ${filasLog}`);
+        // Executa apenas UM passo por chamada
+        this.checkArrivals();
+        const next = this.getNextProcess();
+        if (next) {
+            this.logMessage(`Processo selecionado: ${next.process.name} (Fila ${next.queueIndex})`);
+            this.executeProcess(next.process, next.queueIndex);
+        } else {
+            this.currentTime++;
+            this.logMessage(`💤 CPU ociosa no tempo ${this.currentTime}`);
+        }
+        this.updateQueuesDisplay();
+        this.updateProcessesDisplay();
+        this.updateTimeline();
+        this.updateStatistics();
+        // Só agenda o próximo passo se ainda estiver rodando
+        if (this.isRunning) {
+            setTimeout(() => this.simulateStep(), 350); // Mais lento para garantir visualização
+        }
     }
 
     simulate() {
+        if (!this.isRunning) return; // Garante que não rode se não estiver ativo
         this.logMessage(`🎬 Iniciando simulação do Escalonamento com Feedback Multinível`);
         this.logMessage(`📊 Configuração: Fila 0 (Q=${this.quantums[0]}), Fila 1 (Q=${this.quantums[1]}), Fila 2 (FCFS)`);
-        while (this.completedProcesses.length < this.processes.length) {
-            this.checkArrivals();
-            const next = this.getNextProcess();
-            if (next) {
-                this.executeProcess(next.process, next.queueIndex);
-            } else {
-                // CPU ociosa
-                this.currentTime++;
-                this.logMessage(`💤 CPU ociosa no tempo ${this.currentTime}`);
-            }
-            this.updateQueuesDisplay();
-            this.updateProcessesDisplay();
-            this.updateTimeline();
-            this.updateStatistics();
-        }
-        this.logMessage(`🏁 Simulação concluída! Tempo total: ${this.currentTime}`);
-        this.isRunning = false;
+        this.simulateStep();
     }
 
     reset() {
         this.processes = [];
+        this.allProcesses = [];
         this.queues = [[], [], []];
         this.currentTime = 0;
         this.completedProcesses = [];
@@ -279,6 +303,7 @@ function addExampleProcesses() {
         new Process('P5', 4, 2)
     ];
     examples.forEach(process => scheduler.addProcess(process));
+    startSimulation(); // <-- Adicione esta linha
 }
 
 // Inicializar com exemplo
