@@ -90,23 +90,6 @@ Ao final da simulação, o sistema calcula e exibe as seguintes métricas de des
 * **Taxa de Processamento (Throughput):** O número de processos concluídos por unidade de tempo.
     * $Throughput = \frac{Nº\,Total\,de\,Processos}{Tempo\,Total\,da\,Simulação}$
 
-## 4. Como Executar o Projeto
-Existem duas maneiras simples de executar a simulação:
-
-**Opção 1: Abrindo o Arquivo Localmente**
-1.  Faça o clone ou download deste repositório.
-2.  Navegue até a pasta do projeto.
-3.  Abra o arquivo `index.html` diretamente em um navegador web moderno (Google Chrome, Firefox, etc.).
-
-**Opção 2: Usando um Servidor Local (Recomendado)**
-Para garantir que o carregamento do arquivo `data/exemplos.json` funcione corretamente sem problemas de política de segurança (CORS), é recomendado usar um servidor local.
-1.  Se você tem o Python instalado, navegue até a pasta do projeto via terminal e execute:
-    ```bash
-    # Para Python 3
-    python -m http.server
-    ```
-2.  Abra seu navegador e acesse `http://localhost:8000`.
-
 ## 5. Análise dos Resultados
 
 Utilizando o conjunto de dados de exemplo (`data/exemplos.json`), podemos observar o comportamento característico do MLFQ.
