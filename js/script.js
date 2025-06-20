@@ -16,9 +16,9 @@ class Process {
 class MultilevelFeedbackQueue {
     constructor() {
         this.processes = [];
-        this.allProcesses = []; // Lista imutável de todos os processos
-        this.queues = [[], [], []]; // 3 filas
-        this.quantums = [2, 4, Infinity]; // Quantum para cada fila
+        this.allProcesses = []; 
+        this.queues = [[], [], []]; 
+        this.quantums = [2, 4, Infinity]; 
         this.currentTime = 0;
         this.completedProcesses = [];
         this.timeline = [];
@@ -28,7 +28,7 @@ class MultilevelFeedbackQueue {
 
     addProcess(process) {
         this.processes.push(process);
-        this.allProcesses.push(process); // Adiciona também na lista imutável
+        this.allProcesses.push(process); 
         this.updateProcessesDisplay();
         this.logMessage(`✅ Processo ${process.name} adicionado (Chegada: ${process.arrivalTime}, CPU: ${process.burstTime})`);
     }
@@ -65,7 +65,6 @@ class MultilevelFeedbackQueue {
         for (let i = 0; i < 3; i++) {
             const queueElement = document.getElementById(`queue${i}`);
             queueElement.innerHTML = '';
-            // Adiciona apenas os processos que estão na fila i
             this.queues[i].forEach(process => {
                 const processDiv = document.createElement('div');
                 processDiv.className = 'process-in-queue';
@@ -123,7 +122,7 @@ class MultilevelFeedbackQueue {
     checkArrivals() {
         this.processes.forEach(process => {
             if (process.arrivalTime <= this.currentTime && !this.queues.flat().includes(process) && !this.completedProcesses.includes(process)) {
-                this.queues[0].push(process); // Novos processos sempre na fila 0
+                this.queues[0].push(process); 
                 this.logMessage(`🚀 Processo ${process.name} chegou e foi adicionado à Fila 0`);
             }
         });
@@ -141,12 +140,12 @@ class MultilevelFeedbackQueue {
     executeProcess(process, queueIndex) {
         const quantum = this.quantums[queueIndex];
         const executionTime = Math.min(process.remainingTime, quantum);
-        // Tempo de resposta (primeira execução)
+      
         if (process.responseTime === -1) {
             process.responseTime = this.currentTime - process.arrivalTime;
         }
         this.logMessage(`⚡ Executando ${process.name} da Fila ${queueIndex} por ${executionTime} unidades`);
-        // Adicionar ao timeline
+        
         this.timeline.push({
             process: process.name,
             startTime: this.currentTime,
@@ -156,40 +155,40 @@ class MultilevelFeedbackQueue {
         this.currentTime += executionTime;
         process.remainingTime -= executionTime;
         process.quantumUsed += executionTime;
-        // Remover da fila atual
+        
         this.queues[queueIndex].shift();
         if (process.remainingTime === 0) {
-            // Processo completado
+            
             process.completionTime = this.currentTime;
             process.turnaroundTime = process.completionTime - process.arrivalTime;
             process.waitingTime = process.turnaroundTime - process.burstTime;
             this.completedProcesses.push(process);
             this.logMessage(`✅ Processo ${process.name} completado!`);
         } else {
-            // Processo não completado
+            
             if (queueIndex < 2 && process.quantumUsed >= quantum) {
-                // Mover para fila de menor prioridade
+                
                 process.currentQueue = queueIndex + 1;
                 this.queues[queueIndex + 1].push(process);
                 process.quantumUsed = 0;
                 this.logMessage(`⬇️ Processo ${process.name} movido para Fila ${queueIndex + 1}`);
             } else {
-                // Voltar para a mesma fila (FCFS na fila 2)
+                
                 this.queues[queueIndex].push(process);
                 if (queueIndex < 2) process.quantumUsed = 0;
             }
         }
-        // Atualizar tempos de espera para outros processos
+        
         this.queues.flat().forEach(p => {
             if (p !== process && p.remainingTime > 0) {
                 p.waitingTime += executionTime;
             }
         });
-        // Remover processos finalizados de todas as filas para evitar loop infinito
+        
         for (let i = 0; i < 3; i++) {
             this.queues[i] = this.queues[i].filter(p => p.remainingTime > 0);
         }
-        // --- CORREÇÃO: Remover processos já completados da fila de processos também ---
+        
         this.processes = this.processes.filter(p => p.remainingTime > 0 || this.completedProcesses.includes(p));
     }
 
@@ -199,10 +198,10 @@ class MultilevelFeedbackQueue {
             this.isRunning = false;
             return;
         }
-        // Log do estado das filas
+        
         let filasLog = this.queues.map((fila, idx) => `Fila ${idx}: [${fila.map(p => p.name + ' (' + p.remainingTime + ')').join(', ')}]`).join(' | ');
         this.logMessage(`Filas: ${filasLog}`);
-        // Executa apenas UM passo por chamada
+        
         this.checkArrivals();
         const next = this.getNextProcess();
         if (next) {
@@ -216,14 +215,14 @@ class MultilevelFeedbackQueue {
         this.updateProcessesDisplay();
         this.updateTimeline();
         this.updateStatistics();
-        // Só agenda o próximo passo se ainda estiver rodando
+        
         if (this.isRunning) {
-            setTimeout(() => this.simulateStep(), 350); // Mais lento para garantir visualização
+            setTimeout(() => this.simulateStep(), 350); 
         }
     }
 
     simulate() {
-        if (!this.isRunning) return; // Garante que não rode se não estiver ativo
+        if (!this.isRunning) return; 
         this.logMessage(`🎬 Iniciando simulação do Escalonamento com Feedback Multinível`);
         this.logMessage(`📊 Configuração: Fila 0 (Q=${this.quantums[0]}), Fila 1 (Q=${this.quantums[1]}), Fila 2 (FCFS)`);
         this.simulateStep();
@@ -252,7 +251,7 @@ class MultilevelFeedbackQueue {
     }
 }
 
-// Instância global do escalonador
+
 const scheduler = new MultilevelFeedbackQueue();
 
 function addProcess() {
@@ -265,7 +264,7 @@ function addProcess() {
     }
     const process = new Process(name, arrivalTime, burstTime);
     scheduler.addProcess(process);
-    // Limpar campos
+    
     document.getElementById('processName').value = '';
     document.getElementById('arrivalTime').value = '0';
     document.getElementById('burstTime').value = '5';
@@ -303,10 +302,10 @@ function addExampleProcesses() {
         new Process('P5', 4, 2)
     ];
     examples.forEach(process => scheduler.addProcess(process));
-    startSimulation(); // <-- Adicione esta linha
+    startSimulation(); 
 }
 
-// Inicializar com exemplo
+
 window.onload = function() {
     scheduler.logMessage(`🎯 Simulador de Escalonamento com Feedback Multinível iniciado`);
     scheduler.logMessage(`💡 Clique em "Carregar Exemplo" para ver um conjunto de processos de teste`);
